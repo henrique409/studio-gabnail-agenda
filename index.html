@@ -1,182 +1,169 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Agendamento | Studio Gabi Dummer</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agendamento | Studio Gabi Dummer</title>
 
-<link rel="icon" type="image/png" href="img/favicon.png" />
-<link rel="stylesheet" href="css/estilo.css" />
+  <!-- caminhos com ./ evitam problemas em GitHub Pages e subpastas -->
+  <link rel="icon" type="image/png" href="./img/favicon.png" />
+  <link rel="stylesheet" href="./css/estilo.css" />
 </head>
 
-<body>
+<body id="topo">
 
-<header class="topo">
-<div class="topo-container">
+  <header class="topo">
+    <div class="topo-container">
 
-<a class="brand" href="#topo">
-<img src="img/logo.png" alt="Gabriela Dummer - Designer de Unhas" />
-<span class="nome-studio">studio.gabidummer.nails</span>
-</a>
+      <a class="brand" href="#topo">
+        <img src="./img/logo.png" alt="Gabriela Dummer - Designer de Unhas" />
+        <span class="nome-studio">studio.gabidummer.nails</span>
+      </a>
 
-<nav class="topo-links">
+      <nav class="topo-links">
+        <a class="link-icone"
+           href="https://instagram.com/studio.gabidummer.nails"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="Instagram">
+          <img width="22" alt="Instagram"
+               src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" />
+        </a>
 
-<a class="link-icone"
-href="https://instagram.com/studio.gabidummer.nails"
-target="_blank">
-<img width="22"
-src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" />
-</a>
+        <a class="link-icone"
+           href="https://wa.me/5519991046126?text=Olá%20quero%20agendar%20um%20horário"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="WhatsApp">
+          <img width="22" alt="WhatsApp"
+               src="https://cdn-icons-png.flaticon.com/512/733/733585.png" />
+        </a>
+      </nav>
 
-<a class="link-icone"
-href="https://wa.me/5519991046126?text=Olá%20quero%20agendar%20um%20horário"
-target="_blank">
-<img width="22"
-src="https://cdn-icons-png.flaticon.com/512/733/733585.png" />
-</a>
+    </div>
+  </header>
 
-</nav>
-</div>
-</header>
+  <section class="hero">
+    <div class="hero-texto">
 
-<div id="topo"></div>
+      <span class="tag">Agendamento Online</span>
 
-<section class="hero">
-<div class="hero-texto">
+      <h1>Agende seu horário com rapidez e praticidade</h1>
 
-<span class="tag">Agendamento Online</span>
+      <p>
+        Escolha o dia e o horário disponível e confirme pelo WhatsApp.
+        Atendimento profissional e rápido.
+      </p>
 
-<h1>Agende seu horário com rapidez e praticidade</h1>
+      <div class="mini-info">
+        <span class="badge">Confirmação no Whats</span>
+        <span class="muted">Horários disponíveis</span>
+        <span class="muted">Studio profissional</span>
+      </div>
 
-<p>
-Escolha o dia e o horário disponível e confirme pelo WhatsApp.
-Atendimento profissional e rápido.
-</p>
+      <a href="./agenda/" class="botao-comprar">AGENDAR HORÁRIO</a>
 
-<div class="mini-info">
-<span class="badge">Confirmação no Whats</span>
-<span class="muted">Horários disponíveis</span>
-<span class="muted">Studio profissional</span>
-</div>
+      <div class="pagamentos">
+        <span>Agendamento online rápido e fácil</span>
+      </div>
 
-<a href="agenda/" class="botao-comprar">
-AGENDAR HORÁRIO
-</a>
+    </div>
 
-<div class="pagamentos">
-<span>Agendamento online rápido e fácil</span>
-</div>
+    <div class="hero-imagem">
+      <img src="./img/professora2.jpg" alt="Profissional do Studio" />
+    </div>
+  </section>
 
-</div>
+  <!-- ===== GALERIA / CARROSSEL ===== -->
+  <section class="galeria">
+    <div class="container">
+      <h2 class="titulo-sec">Trabalhos recentes</h2>
+      <p class="sub-sec">Veja alguns resultados reais do studio.</p>
 
-<div class="hero-imagem">
-<img src="img/professora2.jpg" />
-</div>
-</section>
+      <div class="carousel" data-carousel>
+        <button class="nav prev" type="button" aria-label="Anterior" data-prev>‹</button>
 
-<!-- ===== GALERIA / CARROSSEL ===== -->
-<section class="galeria">
-  <div class="container">
-    <h2 class="titulo-sec">Trabalhos recentes</h2>
-    <p class="sub-sec">Veja alguns resultados reais do studio.</p>
-
-    <div class="carousel" data-carousel>
-      <button class="nav prev" type="button" aria-label="Anterior" data-prev>‹</button>
-
-      <div class="viewport">
-        <div class="track" data-track>
-          <div class="slide" data-slide><img src="img/galeria/01.jpg" alt="Unhas - 01"></div>
-          <div class="slide" data-slide><img src="img/galeria/02.jpg" alt="Unhas - 02"></div>
-          <div class="slide" data-slide><img src="img/galeria/03.jpg" alt="Unhas - 03"></div>
-          <div class="slide" data-slide><img src="img/galeria/04.jpg" alt="Unhas - 04"></div>
+        <div class="viewport">
+          <div class="track" data-track>
+            <div class="slide" data-slide><img src="./img/galeria/01.jpg" alt="Unhas - 01"></div>
+            <div class="slide" data-slide><img src="./img/galeria/02.jpg" alt="Unhas - 02"></div>
+            <div class="slide" data-slide><img src="./img/galeria/03.jpg" alt="Unhas - 03"></div>
+            <div class="slide" data-slide><img src="./img/galeria/04.jpg" alt="Unhas - 04"></div>
+          </div>
         </div>
+
+        <button class="nav next" type="button" aria-label="Próximo" data-next>›</button>
+
+        <div class="dots" data-dots></div>
+      </div>
+    </div>
+  </section>
+  <!-- ===== /GALERIA ===== -->
+
+  <!-- ===== ANTES / DEPOIS ===== -->
+  <section class="antes-depois">
+    <div class="container">
+      <h2 class="titulo-sec">Transformações reais</h2>
+      <p class="sub-sec">Arraste para ver o antes e depois.</p>
+
+      <div class="compare">
+        <img src="./img/antes.jpg" class="img-base" alt="Antes">
+        <div class="img-top" id="imgTop">
+          <img src="./img/depois.jpg" alt="Depois">
+        </div>
+
+        <input type="range" min="0" max="100" value="50" id="slider" aria-label="Controle antes e depois">
+      </div>
+    </div>
+  </section>
+  <!-- ===== /ANTES / DEPOIS ===== -->
+
+  <section class="cta-box">
+    <h3>Pronta para ficar com as unhas impecáveis?</h3>
+    <p>Escolha seu horário e confirme seu agendamento.</p>
+    <a href="./agenda/" class="botao-comprar">AGENDAR HORÁRIO</a>
+  </section>
+
+  <section class="cta-final">
+    <a href="./agenda/" class="botao-comprar">AGENDAR HORÁRIO</a>
+  </section>
+
+  <a class="cta-fixo" href="./agenda/">AGENDAR</a>
+
+  <footer class="rodape">
+    <div class="container rodape-flex">
+
+      <div class="rodape-brand">
+        <img class="rodape-logo" src="./img/logo.png" alt="Logo Studio" />
+        <p class="rodape-txt">Agendamento online com confirmação pelo WhatsApp.</p>
       </div>
 
-      <button class="nav next" type="button" aria-label="Próximo" data-next>›</button>
+      <div class="rodape-links">
+        <a class="instagram-link"
+           href="https://instagram.com/studio.gabidummer.nails"
+           target="_blank"
+           rel="noopener noreferrer">
+          <img width="18" alt="Instagram"
+               src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png">
+          @studio.gabidummer.nails
+        </a>
 
-      <div class="dots" data-dots></div>
-    </div>
-  </div>
-</section>
-<!-- ===== /GALERIA ===== -->
-
-<!-- ===== ANTES / DEPOIS ===== -->
-<section class="antes-depois">
-  <div class="container">
-    <h2 class="titulo-sec">Transformações reais</h2>
-    <p class="sub-sec">Arraste para ver o antes e depois.</p>
-
-    <div class="compare">
-      <img src="img/antes.jpg" class="img-base" alt="Antes">
-      <div class="img-top" id="imgTop">
-        <img src="img/depois.jpg" alt="Depois">
+        <a class="whats-link"
+           href="https://wa.me/5519991046126?text=Olá%20quero%20agendar%20um%20horário"
+           target="_blank"
+           rel="noopener noreferrer">
+          <img width="18" alt="WhatsApp"
+               src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
+          Fale no WhatsApp
+        </a>
       </div>
 
-      <input type="range" min="0" max="100" value="50" id="slider" aria-label="Controle antes e depois">
     </div>
-  </div>
-</section>
-<!-- ===== /ANTES / DEPOIS ===== -->
+  </footer>
 
-<section class="cta-box">
-
-<h3>Pronta para ficar com as unhas impecáveis?</h3>
-<p>Escolha seu horário e confirme seu agendamento.</p>
-
-<a href="agenda/" class="botao-comprar">
-AGENDAR HORÁRIO
-</a>
-
-</section>
-
-<section class="cta-final">
-
-<a href="agenda/" class="botao-comprar">
-AGENDAR HORÁRIO
-</a>
-
-</section>
-
-<a class="cta-fixo" href="agenda/">
-AGENDAR
-</a>
-
-<footer class="rodape">
-<div class="container rodape-flex">
-
-<div class="rodape-brand">
-<img class="rodape-logo" src="img/logo.png" />
-<p class="rodape-txt">
-Agendamento online com confirmação pelo WhatsApp.
-</p>
-</div>
-
-<div class="rodape-links">
-
-<a class="instagram-link"
-href="https://instagram.com/studio.gabidummer.nails"
-target="_blank">
-<img width="18"
-src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png">
-@studio.gabidummer.nails
-</a>
-
-<a class="whats-link"
-href="https://wa.me/5519991046126?text=Olá%20quero%20agendar%20um%20horário"
-target="_blank">
-<img width="18"
-src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
-Fale no WhatsApp
-</a>
-
-</div>
-</div>
-</footer>
-
-<!-- JS do carrossel -->
-<script src="js/carrossel.js"></script>
-<!-- JS do antes/depois -->
-<script src="js/antes-depois.js"></script>
+  <!-- scripts com defer (carrega sem travar o layout) -->
+  <script src="./js/carrossel.js" defer></script>
+  <script src="./js/antes-depois.js" defer></script>
 
 </body>
 </html>
