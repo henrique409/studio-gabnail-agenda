@@ -1,139 +1,123 @@
-const SPREADSHEET_ID = "1xifThuflyHX27K4PL8DRaJA6IMDzi_kj5URsUyh2nlo";
-const SHEET_HORARIOS = "HORARIOS";
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agendamento | Studio Gabi Dummer</title>
 
-// Colunas na sua planilha (A..G):
-// A Data | B Hora | C Servico | D Preco | E Status | F ReservarID | G ReservadoEm
-const COL_DATA = 1;
-const COL_HORA = 2;
-const COL_SERVICO = 3;
-const COL_PRECO = 4;
-const COL_STATUS = 5;
-const COL_RESERVA_ID = 6;
-const COL_RESERVADO_EM = 7;
+<link rel="stylesheet" href="../css/estilo.css">
 
-function getSheet_(){
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sh = ss.getSheetByName(SHEET_HORARIOS);
-  if(!sh) throw new Error('Aba "HORARIOS" não encontrada.');
-  return sh;
+<style>
+body{font-family:Arial;background:#fff0f6;margin:0}
+.wrap{max-width:900px;margin:120px auto;padding:20px}
+.card{background:#fff;border-radius:20px;padding:20px;box-shadow:0 10px 25px rgba(0,0,0,.08)}
+.slot{display:flex;justify-content:space-between;align-items:center;margin:10px 0;padding:12px;border:1px solid #eee;border-radius:14px}
+.btn{background:#ff4fa3;border:0;color:#fff;padding:10px 14px;border-radius:10px;font-weight:bold;cursor:pointer}
+.badge{background:#ffe0ef;color:#d63384;padding:6px 10px;border-radius:999px;font-weight:bold}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+<div class="card">
+
+<h2>Agendamento</h2>
+<div id="status" class="badge">Carregando...</div>
+
+<div id="lista"></div>
+
+</div>
+</div>
+
+<script>
+
+const WEBAPP_URL =
+"https://script.google.com/macros/s/AKfycbwluaTuD98C0SAgZmCqBtwZgq1D1rVWkpyyR6XqnmB2WCCoxzLUXixqhenUUwElqjk9/exec";
+
+const lista = document.getElementById("lista");
+const status = document.getElementById("status");
+
+// JSONP (GitHub precisa disso)
+function jsonp(url){
+  return new Promise((resolve,reject)=>{
+    const cb="cb_"+Math.random().toString(36).slice(2);
+    window[cb]=(data)=>{delete window[cb];script.remove();resolve(data);};
+    const script=document.createElement("script");
+    script.src=url+"&callback="+cb;
+    script.onerror=()=>reject("Erro ao carregar Apps Script");
+    document.body.appendChild(script);
+  });
 }
 
-function doGet(e){
-  const params = (e && e.parameter) ? e.parameter : {};
-  const action = (params.action ? String(params.action) : "list").toLowerCase();
+async function carregar(){
+
+  status.textContent="Carregando horários...";
+  lista.innerHTML="";
 
   try{
-    if(action === "list"){
-      return output_(listar_(), params);
+
+    const res = await jsonp(WEBAPP_URL+"?action=list");
+
+    if(!res.ok) throw "Erro ao listar";
+
+    const slots = res.slots || [];
+
+    if(!slots.length){
+      status.textContent="Sem horários";
+      return;
     }
 
-    if(action === "reserve"){
-      const row = Number(params.row);
-      if(!row || row < 2) return output_({ok:false, error:"Linha inválida."}, params);
-      return output_(reservar_(row), params);
-    }
+    status.textContent = slots.length+" horários disponíveis";
 
-    return output_({ok:false,error:"ação inválida"}, params);
+    slots.forEach(s=>{
+
+      const div=document.createElement("div");
+      div.className="slot";
+
+      div.innerHTML=`
+        <div>
+          <b>${s.data} • ${s.hora}</b><br>
+          ${s.servico} — ${s.preco}
+        </div>
+        <button class="btn">RESERVAR</button>
+      `;
+
+      const btn=div.querySelector("button");
+
+      btn.onclick=async()=>{
+
+        btn.disabled=true;
+        btn.textContent="Reservando...";
+
+        try{
+
+          const r=await jsonp(WEBAPP_URL+"?action=reserve&row="+s.row);
+
+          if(!r.ok) throw "Erro ao reservar";
+
+          div.remove();
+          status.textContent="Reservado ✅";
+
+        }catch(e){
+          btn.disabled=false;
+          btn.textContent="RESERVAR";
+          alert(e);
+        }
+      };
+
+      lista.appendChild(div);
+    });
 
   }catch(err){
-    return output_({ok:false,error:String(err && err.message ? err.message : err)}, params);
+    status.textContent="Erro ao carregar";
+    alert(err);
   }
 }
 
-function listar_(){
-  const sh = getSheet_();
-  const lastRow = sh.getLastRow();
-  if(lastRow < 2) return {ok:true, slots:[]};
+carregar();
 
-  const values = sh.getRange(2, 1, lastRow - 1, 7).getValues();
-  const tz = Session.getScriptTimeZone();
+</script>
 
-  const slots = [];
-
-  values.forEach((r, i) => {
-    const data = r[0];
-    const hora = r[1];
-    const servico = r[2];
-    const preco = r[3];
-    const status = String(r[4] || "").toUpperCase().trim();
-
-    if(status !== "DISPONIVEL") return;
-
-    // Formata data
-    let dataFormatada = "";
-    if(data instanceof Date && !isNaN(data.getTime())){
-      dataFormatada = Utilities.formatDate(data, tz, "dd/MM/yyyy");
-    } else {
-      dataFormatada = String(data || "");
-    }
-
-    // Formata hora
-    let horaFormatada = "";
-    if(hora instanceof Date && !isNaN(hora.getTime())){
-      horaFormatada = Utilities.formatDate(hora, tz, "HH:mm");
-    } else {
-      horaFormatada = String(hora || "").trim();
-    }
-
-    slots.push({
-      row: i + 2,
-      data: dataFormatada,
-      hora: horaFormatada,
-      servico: servico,
-      preco: preco
-    });
-  });
-
-  return {ok:true, slots};
-}
-
-function reservar_(row){
-  // Trava para evitar 2 pessoas reservarem ao mesmo tempo
-  const lock = LockService.getScriptLock();
-  lock.waitLock(15000);
-
-  try{
-    const sh = getSheet_();
-
-    // Lê status atual da linha
-    const statusCell = sh.getRange(row, COL_STATUS);
-    const status = String(statusCell.getValue() || "").toUpperCase().trim();
-
-    if(status !== "DISPONIVEL"){
-      return {ok:false, error:"Este horário já foi reservado. Atualize a página."};
-    }
-
-    // Marca como reservado
-    const reservaId = Utilities.getUuid();
-    const agora = new Date();
-
-    statusCell.setValue("RESERVADO");
-    sh.getRange(row, COL_RESERVA_ID).setValue(reservaId);
-    sh.getRange(row, COL_RESERVADO_EM).setValue(agora);
-
-    return {ok:true, reservaId};
-
-  } finally {
-    lock.releaseLock();
-  }
-}
-
-/**
- * JSONP para GitHub Pages:
- * se vier ?callback=nomeFunc -> devolve JavaScript: nomeFunc({...});
- * senão devolve JSON normal
- */
-function output_(obj, params){
-  const callback = params.callback ? String(params.callback).trim() : "";
-
-  if(callback){
-    const js = `${callback}(${JSON.stringify(obj)});`;
-    return ContentService
-      .createTextOutput(js)
-      .setMimeType(ContentService.MimeType.JAVASCRIPT);
-  }
-
-  return ContentService
-    .createTextOutput(JSON.stringify(obj))
-    .setMimeType(ContentService.MimeType.JSON);
-}
+</body>
+</html>
