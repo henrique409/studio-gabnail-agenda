@@ -1,281 +1,139 @@
-<!doctype html>
-<html lang="pt-br">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Agendamento | Studio Gabi Dummer</title>
+const SPREADSHEET_ID = "1xifThuflyHX27K4PL8DRaJA6IMDzi_kj5URsUyh2nlo";
+const SHEET_HORARIOS = "HORARIOS";
 
-  <link rel="icon" type="image/png" href="../img/favicon.png" />
-  <link rel="stylesheet" href="../css/estilo.css" />
+// Colunas na sua planilha (A..G):
+// A Data | B Hora | C Servico | D Preco | E Status | F ReservarID | G ReservadoEm
+const COL_DATA = 1;
+const COL_HORA = 2;
+const COL_SERVICO = 3;
+const COL_PRECO = 4;
+const COL_STATUS = 5;
+const COL_RESERVA_ID = 6;
+const COL_RESERVADO_EM = 7;
 
-  <style>
-    .wrap{max-width:1100px;margin:110px auto 50px;padding:0 18px;}
-    .card{background:#fff;border-radius:22px;padding:22px;box-shadow:0 14px 35px rgba(0,0,0,.08);}
-    .titulo{margin:0 0 6px;font-size:28px;color:#d63384;}
-    .sub{margin:0 0 14px;opacity:.85;line-height:1.35}
-    .top-mini{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
-    .badge{display:inline-block;background:#ffe0ef;color:#d63384;padding:6px 10px;border-radius:999px;font-weight:800;font-size:12px;}
-    .acoes{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+function getSheet_(){
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sh = ss.getSheetByName(SHEET_HORARIOS);
+  if(!sh) throw new Error('Aba "HORARIOS" não encontrada.');
+  return sh;
+}
 
-    .btn{
-      display:inline-block;border:0;border-radius:14px;padding:10px 14px;
-      font-weight:900;cursor:pointer;text-decoration:none;
-      background:#ff4fa3;color:#fff;
-    }
-    .btn:disabled{opacity:.6;cursor:not-allowed;}
-    .btn-sec{background:#ffe0ef;color:#d63384;}
-    .btn-mini{padding:8px 12px;border-radius:12px;font-weight:900;}
-    .btn-full{width:100%;text-align:center;padding:14px 16px;border-radius:16px;font-size:14px}
+function doGet(e){
+  const params = (e && e.parameter) ? e.parameter : {};
+  const action = (params.action ? String(params.action) : "list").toLowerCase();
 
-    .grid{display:grid;gap:12px;margin-top:14px;}
-
-    .slot{
-      display:flex;justify-content:space-between;align-items:center;gap:14px;
-      padding:14px 14px;border:1px solid rgba(0,0,0,.08);border-radius:18px;
-    }
-    .slot .left b{display:block;font-size:14px}
-    .slot .left small{display:block;opacity:.82;margin-top:2px}
-    .slot .right{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
-    .pill{
-      display:inline-block;background:#f6f6f6;border:1px solid rgba(0,0,0,.06);
-      padding:6px 10px;border-radius:999px;font-weight:800;font-size:12px;opacity:.9
+  try{
+    if(action === "list"){
+      return output_(listar_(), params);
     }
 
-    .msg{font-size:13px;opacity:.85;line-height:1.4;margin-top:12px}
-    .linha{height:1px;background:rgba(0,0,0,.06);margin:16px 0;}
-
-    .box{
-      border-radius:18px;padding:14px;border:1px solid rgba(0,0,0,.07);
-      background:#fafafa;
+    if(action === "reserve"){
+      const row = Number(params.row);
+      if(!row || row < 2) return output_({ok:false, error:"Linha inválida."}, params);
+      return output_(reservar_(row), params);
     }
-    .ok{
-      background:#f3fff7;border-color:rgba(0,128,0,.14);color:#0a6b2b;
-    }
-    .erro{
-      background:#fff3f3;border-color:rgba(255,0,0,.14);color:#b00020;
-    }
-    .box h3{margin:0 0 10px;font-size:15px}
-    .info{
-      display:grid;grid-template-columns:1fr 1fr;gap:10px;
-      margin:10px 0 12px;
-    }
-    @media(max-width:700px){
-      .info{grid-template-columns:1fr}
-      .slot{flex-direction:column;align-items:flex-start}
-      .slot .right{width:100%;flex-direction:row;justify-content:space-between;align-items:center}
-    }
-    .kv{background:#fff;border:1px solid rgba(0,0,0,.06);border-radius:14px;padding:10px}
-    .kv span{display:block;font-size:11px;opacity:.7;font-weight:800;text-transform:uppercase;letter-spacing:.3px}
-    .kv b{display:block;margin-top:4px;font-size:14px}
 
-    iframe{width:100%;height:900px;border:0;border-radius:16px;overflow:hidden;}
-    @media(max-width:900px){ iframe{height:980px;} }
-  </style>
-</head>
+    return output_({ok:false,error:"ação inválida"}, params);
 
-<body>
-
-<header class="topo">
-  <div class="topo-container">
-    <a class="brand" href="../#topo">
-      <img src="../img/logo.png" alt="Studio Gabi Dummer" />
-      <span class="nome-studio">studio.gabidummer.nails</span>
-    </a>
-
-    <nav class="topo-links">
-      <a class="link-icone" href="../" style="text-decoration:none;">
-        <span class="badge">Voltar</span>
-      </a>
-    </nav>
-  </div>
-</header>
-
-<main class="wrap">
-
-  <div class="top-mini">
-    <div>
-      <h1 class="titulo">Agendamento</h1>
-      <p class="sub">
-        1) Escolha um horário e clique em <b>RESERVAR</b> ✅<br>
-        2) Depois clique em <b>PREENCHER FORMULÁRIO</b> para confirmar.
-      </p>
-    </div>
-
-    <div class="acoes">
-      <span class="badge" id="statusBadge">Carregando horários…</span>
-      <button class="btn btn-sec btn-mini" id="btnAtualizar" type="button">Atualizar</button>
-      <a class="btn btn-sec btn-mini" id="btnFormsTopo" target="_blank" rel="noopener noreferrer"
-         href="https://docs.google.com/forms/d/e/1FAIpQLSe5UBt0En3aVGkGw4Oue4cdFE2oCK4YCTcUIjE7ySW7z7Wp4Q/viewform?usp=publish-editor">
-        Abrir formulário
-      </a>
-    </div>
-  </div>
-
-  <section class="card">
-    <div id="alerta" class="msg"></div>
-    <div id="lista" class="grid"></div>
-
-    <div class="linha"></div>
-    <p class="msg">⏳ A reserva expira em alguns minutos se o formulário não for preenchido.</p>
-  </section>
-
-  <div class="linha"></div>
-
-  <div class="top-mini">
-    <div>
-      <h2 class="titulo" style="font-size:22px;margin-bottom:4px;">Confirmar agendamento</h2>
-      <p class="sub" style="margin-bottom:0;">
-        Preencha para confirmar. Assim que enviar, confirmamos pelo WhatsApp. ✅
-      </p>
-    </div>
-
-    <div class="acoes">
-      <span class="badge">Agendamento grátis (Google Forms)</span>
-      <a class="btn btn-sec" target="_blank" rel="noopener noreferrer"
-         href="https://docs.google.com/forms/d/e/1FAIpQLSe5UBt0En3aVGkGw4Oue4cdFE2oCK4YCTcUIjE7ySW7z7Wp4Q/viewform?usp=publish-editor">
-        Abrir em tela cheia
-      </a>
-    </div>
-  </div>
-
-  <section class="card">
-    <iframe
-      src="https://docs.google.com/forms/d/e/1FAIpQLSe5UBt0En3aVGkGw4Oue4cdFE2oCK4YCTcUIjE7ySW7z7Wp4Q/viewform?embedded=true"
-      loading="lazy"
-      referrerpolicy="no-referrer-when-downgrade">
-    </iframe>
-  </section>
-
-</main>
-
-<script>
-  // ✅ SUA URL DO APPS SCRIPT
-  const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzDld2e-J5yAJa17jKzKGJ_en3wu4CsNdYuiJD0hu1toe6oUPhz8pp_sgRufHqtkjvz/exec";
-
-  const statusBadge = document.getElementById("statusBadge");
-  const listaEl = document.getElementById("lista");
-  const alertaEl = document.getElementById("alerta");
-  const btnAtualizar = document.getElementById("btnAtualizar");
-
-  function setAlerta(html, tipo="") {
-    alertaEl.className = "msg " + (tipo || "");
-    alertaEl.innerHTML = html || "";
+  }catch(err){
+    return output_({ok:false,error:String(err && err.message ? err.message : err)}, params);
   }
+}
 
-  // JSONP para GitHub Pages (evita CORS)
-  function jsonp(url) {
-    return new Promise((resolve, reject) => {
-      const cb = "cb_" + Math.random().toString(36).slice(2);
-      window[cb] = (data) => {
-        delete window[cb];
-        script.remove();
-        resolve(data);
-      };
+function listar_(){
+  const sh = getSheet_();
+  const lastRow = sh.getLastRow();
+  if(lastRow < 2) return {ok:true, slots:[]};
 
-      const sep = url.includes("?") ? "&" : "?";
-      const script = document.createElement("script");
-      script.src = url + sep + "callback=" + cb;
-      script.onerror = () => {
-        delete window[cb];
-        script.remove();
-        reject(new Error("Falha ao carregar do Apps Script."));
-      };
-      document.body.appendChild(script);
+  const values = sh.getRange(2, 1, lastRow - 1, 7).getValues();
+  const tz = Session.getScriptTimeZone();
+
+  const slots = [];
+
+  values.forEach((r, i) => {
+    const data = r[0];
+    const hora = r[1];
+    const servico = r[2];
+    const preco = r[3];
+    const status = String(r[4] || "").toUpperCase().trim();
+
+    if(status !== "DISPONIVEL") return;
+
+    // Formata data
+    let dataFormatada = "";
+    if(data instanceof Date && !isNaN(data.getTime())){
+      dataFormatada = Utilities.formatDate(data, tz, "dd/MM/yyyy");
+    } else {
+      dataFormatada = String(data || "");
+    }
+
+    // Formata hora
+    let horaFormatada = "";
+    if(hora instanceof Date && !isNaN(hora.getTime())){
+      horaFormatada = Utilities.formatDate(hora, tz, "HH:mm");
+    } else {
+      horaFormatada = String(hora || "").trim();
+    }
+
+    slots.push({
+      row: i + 2,
+      data: dataFormatada,
+      hora: horaFormatada,
+      servico: servico,
+      preco: preco
     });
-  }
+  });
 
-  function renderReservaOk(slot) {
-    const html = `
-      <div class="box ok">
-        <h3>✅ Horário reservado com sucesso!</h3>
+  return {ok:true, slots};
+}
 
-        <div class="info">
-          <div class="kv"><span>Data</span><b>${slot.data}</b></div>
-          <div class="kv"><span>Horário</span><b>${slot.hora}</b></div>
-          <div class="kv"><span>Serviço</span><b>${slot.servico}</b></div>
-          <div class="kv"><span>Valor</span><b>${slot.preco}</b></div>
-        </div>
+function reservar_(row){
+  // Trava para evitar 2 pessoas reservarem ao mesmo tempo
+  const lock = LockService.getScriptLock();
+  lock.waitLock(15000);
 
-        <a class="btn btn-full" target="_blank" rel="noopener noreferrer"
-           href="https://docs.google.com/forms/d/e/1FAIpQLSe5UBt0En3aVGkGw4Oue4cdFE2oCK4YCTcUIjE7ySW7z7Wp4Q/viewform?usp=publish-editor">
-          PREENCHER FORMULÁRIO PARA CONFIRMAR ✅
-        </a>
+  try{
+    const sh = getSheet_();
 
-        <div class="msg" style="margin-top:10px;">
-          Depois de enviar, vamos confirmar pelo WhatsApp.
-        </div>
-      </div>
-    `;
-    setAlerta(html, "ok");
-  }
+    // Lê status atual da linha
+    const statusCell = sh.getRange(row, COL_STATUS);
+    const status = String(statusCell.getValue() || "").toUpperCase().trim();
 
-  async function carregarHorarios() {
-    listaEl.innerHTML = "";
-    setAlerta("");
-    statusBadge.textContent = "Carregando horários…";
-
-    try {
-      const data = await jsonp(WEBAPP_URL + "?action=list");
-      if (!data.ok) throw new Error(data.error || "Erro ao listar horários.");
-
-      const slots = data.slots || [];
-      statusBadge.textContent = slots.length ? (slots.length + " horários disponíveis") : "Nenhum horário disponível";
-
-      if (!slots.length) {
-        setAlerta('<div class="box erro"><b>Sem horários disponíveis.</b><div class="msg">Tente novamente mais tarde.</div></div>', "erro");
-        return;
-      }
-
-      for (const s of slots) {
-        const div = document.createElement("div");
-        div.className = "slot";
-        div.innerHTML = `
-          <div class="left">
-            <b>${s.data} • ${s.hora}</b>
-            <small>${s.servico}</small>
-          </div>
-          <div class="right">
-            <span class="pill">${s.preco}</span>
-            <button class="btn" type="button">RESERVAR</button>
-          </div>
-        `;
-
-        const btn = div.querySelector("button");
-        btn.addEventListener("click", async () => {
-          btn.disabled = true;
-          btn.textContent = "Reservando…";
-          setAlerta("");
-
-          try {
-            const res = await jsonp(WEBAPP_URL + "?action=reserve&row=" + encodeURIComponent(s.row));
-            if (!res.ok) throw new Error(res.error || "Não foi possível reservar.");
-
-            div.remove(); // some da lista
-            statusBadge.textContent = "Reservado ✅";
-            renderReservaOk(s);
-
-            // desce suavemente
-            window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-
-          } catch (err) {
-            btn.disabled = false;
-            btn.textContent = "RESERVAR";
-            setAlerta(`<div class="box erro">${err.message}</div>`, "erro");
-          }
-        });
-
-        listaEl.appendChild(div);
-      }
-
-    } catch (err) {
-      statusBadge.textContent = "Erro";
-      setAlerta(`<div class="box erro">${err.message}</div>`, "erro");
+    if(status !== "DISPONIVEL"){
+      return {ok:false, error:"Este horário já foi reservado. Atualize a página."};
     }
+
+    // Marca como reservado
+    const reservaId = Utilities.getUuid();
+    const agora = new Date();
+
+    statusCell.setValue("RESERVADO");
+    sh.getRange(row, COL_RESERVA_ID).setValue(reservaId);
+    sh.getRange(row, COL_RESERVADO_EM).setValue(agora);
+
+    return {ok:true, reservaId};
+
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/**
+ * JSONP para GitHub Pages:
+ * se vier ?callback=nomeFunc -> devolve JavaScript: nomeFunc({...});
+ * senão devolve JSON normal
+ */
+function output_(obj, params){
+  const callback = params.callback ? String(params.callback).trim() : "";
+
+  if(callback){
+    const js = `${callback}(${JSON.stringify(obj)});`;
+    return ContentService
+      .createTextOutput(js)
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
   }
 
-  btnAtualizar.addEventListener("click", carregarHorarios);
-  carregarHorarios();
-</script>
-
-</body>
-</html>
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
