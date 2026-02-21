@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Agendamento | Studio Gabi Dummer</title>
+
+  <link rel="icon" type="image/png" href="../img/favicon.png" />
+  <link rel="stylesheet" href="../css/estilo.css" />
+
+  <style>
+    .wrap{max-width:1100px;margin:110px auto 50px;padding:0 18px;}
+    .card{background:#fff;border-radius:22px;padding:22px;box-shadow:0 14px 35px rgba(0,0,0,.08);}
+    .grid{display:grid;gap:14px;}
+    .grid-2{grid-template-columns:1fr 1fr;gap:18px;}
+    @media(max-width:900px){.grid-2{grid-template-columns:1fr;}}
+    .titulo{margin:0 0 6px;font-size:28px;color:#d63384;}
+    .sub{margin:0 0 14px;opacity:.85}
+    .linha{height:1px;background:rgba(0,0,0,.06);margin:12px 0;}
+    .slot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border:1px solid rgba(0,0,0,.08);border-radius:14px;}
+    .slot small{opacity:.75}
+    .btn{border:0;border-radius:14px;padding:12px 14px;font-weight:800;cursor:pointer;}
+    .btn:disabled{opacity:.5;cursor:not-allowed;}
+    input,select{width:100%;padding:12px 12px;border-radius:12px;border:1px solid rgba(0,0,0,.12);outline:none;}
+    input:focus,select:focus{border-color:rgba(214,51,132,.5);box-shadow:0 0 0 4px rgba(214,51,132,.12);}
+    .btn-principal{width:100%;padding:14px;border-radius:14px;border:0;font-weight:900;cursor:pointer;background:#ff4fa3;color:#fff;}
+    .top-mini{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;}
+    .voltar{font-weight:800;color:#d63384;text-decoration:none;}
+    .badge{display:inline-block;background:#ffe0ef;color:#d63384;padding:6px 10px;border-radius:999px;font-weight:800;font-size:12px;}
+    .msg{font-size:13px;opacity:.8;line-height:1.35;}
+  </style>
+</head>
+
+<body>
+
+<header class="topo">
+  <div class="topo-container">
+    <a class="brand" href="../#topo">
+      <img src="../img/logo.png" alt="Studio Gabi Dummer" />
+      <span class="nome-studio">studio.gabidummer.nails</span>
+    </a>
+
+    <nav class="topo-links">
+      <a class="link-icone" href="../" style="text-decoration:none;">
+        <span class="badge">Voltar</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="top-mini">
+    <div>
+      <h1 class="titulo">Agendamento</h1>
+      <p class="sub">Escolha uma data e um horário disponível.</p>
+    </div>
+    <span class="badge" id="statusBadge">Selecione uma data</span>
+  </div>
+
+  <div class="grid grid-2">
+
+    <!-- Coluna esquerda -->
+    <section class="card">
+      <h2 style="margin:0 0 10px;">1) Data e horário</h2>
+
+      <label class="msg" for="dia">Selecione a data</label>
+      <input id="dia" type="date" />
+
+      <div class="linha"></div>
+
+      <div class="grid" id="listaHorarios"></div>
+
+      <div class="linha"></div>
+      <p class="msg">
+        * Nesta versão, horários escolhidos ficam reservados no navegador. Depois a gente liga num sistema real.
+      </p>
+    </section>
+
+    <!-- Coluna direita -->
+    <section class="card">
+      <h2 style="margin:0 0 10px;">2) Seus dados</h2>
+
+      <div class="grid">
+        <div>
+          <label class="msg" for="nome">Seu nome</label>
+          <input id="nome" placeholder="Ex: Gabriela" />
+        </div>
+
+        <div>
+          <label class="msg" for="whats">Seu Whats (DDD + número)</label>
+          <input id="whats" placeholder="Ex: 19999999999" />
+        </div>
+
+        <div>
+          <label class="msg" for="servico">Serviço</label>
+          <select id="servico">
+            <option value="">Selecione</option>
+            <option>Manicure</option>
+            <option>Esmaltação em gel</option>
+            <option>Banho de gel</option>
+            <option>Fibra de vidro</option>
+            <option>Alongamento em gel</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="msg" for="horarioEscolhido">Horário escolhido</label>
+          <input id="horarioEscolhido" placeholder="Selecione um horário" readonly />
+        </div>
+
+        <button id="btnConfirmar" class="btn-principal" disabled>
+          CONFIRMAR NO WHATSAPP
+        </button>
+
+        <p class="msg">
+          Ao confirmar, abre uma conversa no WhatsApp com a mensagem já pronta.
+        </p>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script src="./agenda.js"></script>
+</body>
+</html>
