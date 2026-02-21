@@ -16,32 +16,33 @@
     .top-mini{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
     .badge{display:inline-block;background:#ffe0ef;color:#d63384;padding:6px 10px;border-radius:999px;font-weight:800;font-size:12px;}
     .acoes{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+
     .btn{
-      display:inline-block;
-      border:0;
-      border-radius:14px;
-      padding:10px 14px;
-      font-weight:900;
-      cursor:pointer;
-      text-decoration:none;
-      background:#ff4fa3;
-      color:#fff;
+      display:inline-block;border:0;border-radius:14px;padding:10px 14px;
+      font-weight:900;cursor:pointer;text-decoration:none;
+      background:#ff4fa3;color:#fff;
     }
-    .btn-sec{
-      background:#ffe0ef;
-      color:#d63384;
-      font-weight:900;
+    .btn:disabled{opacity:.6;cursor:not-allowed;}
+    .btn-sec{background:#ffe0ef;color:#d63384;font-weight:900;}
+    .btn-mini{padding:8px 12px;border-radius:12px;font-weight:900;}
+
+    .grid{display:grid;gap:12px;margin-top:14px;}
+    .slot{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+      padding:14px;border:1px solid rgba(0,0,0,.08);border-radius:16px;
     }
+    .slot b{display:block}
+    .slot small{opacity:.8}
+
+    .msg{font-size:13px;opacity:.8;line-height:1.35;margin-top:10px}
+    .erro{background:#fff3f3;border:1px solid rgba(255,0,0,.12);padding:12px;border-radius:14px;color:#b00020}
+    .ok{background:#f3fff7;border:1px solid rgba(0,128,0,.12);padding:12px;border-radius:14px;color:#0a6b2b}
+
+    .linha{height:1px;background:rgba(0,0,0,.06);margin:14px 0;}
     iframe{
-      width:100%;
-      height:900px;
-      border:0;
-      border-radius:16px;
-      overflow:hidden;
+      width:100%;height:900px;border:0;border-radius:16px;overflow:hidden;
     }
-    @media(max-width:900px){
-      iframe{height:980px;}
-    }
+    @media(max-width:900px){ iframe{height:980px;} }
   </style>
 </head>
 
@@ -67,8 +68,41 @@
     <div>
       <h1 class="titulo">Agendamento</h1>
       <p class="sub">
-        Preencha o formulário abaixo para solicitar seu horário. <br>
-        Assim que enviar, vamos confirmar pelo WhatsApp. ✅
+        1) Escolha um horário disponível e clique em <b>RESERVAR</b> ✅<br>
+        2) Depois preencha o formulário para confirmar seu atendimento.
+      </p>
+    </div>
+
+    <div class="acoes">
+      <span class="badge" id="statusBadge">Carregando horários…</span>
+      <button class="btn btn-sec btn-mini" id="btnAtualizar" type="button">Atualizar</button>
+      <a class="btn btn-sec btn-mini" id="btnFormsTopo" target="_blank" rel="noopener noreferrer"
+         href="https://docs.google.com/forms/d/e/1FAIpQLSe5UBt0En3aVGkGw4Oue4cdFE2oCK4YCTcUIjE7ySW7z7Wp4Q/viewform?usp=publish-editor">
+        Abrir formulário
+      </a>
+    </div>
+  </div>
+
+  <!-- LISTA DE HORÁRIOS -->
+  <section class="card">
+    <div id="alerta" class="msg"></div>
+    <div id="lista" class="grid"></div>
+
+    <div class="linha"></div>
+
+    <p class="msg">
+      ⏳ Reserva expira em alguns minutos se o formulário não for preenchido.
+    </p>
+  </section>
+
+  <!-- FORMULÁRIO (embed) -->
+  <div class="linha"></div>
+
+  <div class="top-mini">
+    <div>
+      <h2 class="titulo" style="font-size:22px;margin-bottom:4px;">Confirmar agendamento</h2>
+      <p class="sub" style="margin-bottom:0;">
+        Preencha para confirmar. Assim que enviar, confirmamos pelo WhatsApp. ✅
       </p>
     </div>
 
@@ -89,6 +123,117 @@
     </iframe>
   </section>
 </main>
+
+<script>
+  // ✅ SUA URL DO APPS SCRIPT
+  const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzDld2e-J5yAJa17jKzKGJ_en3wu4CsNdYuiJD0hu1toe6oUPhz8pp_sgRufHqtkjvz/exec";
+
+  const statusBadge = document.getElementById("statusBadge");
+  const listaEl = document.getElementById("lista");
+  const alertaEl = document.getElementById("alerta");
+  const btnAtualizar = document.getElementById("btnAtualizar");
+
+  function setAlerta(html, tipo="") {
+    alertaEl.className = "msg " + (tipo || "");
+    alertaEl.innerHTML = html || "";
+  }
+
+  // JSONP para GitHub Pages (CORS)
+  function jsonp(url) {
+    return new Promise((resolve, reject) => {
+      const cb = "cb_" + Math.random().toString(36).slice(2);
+      window[cb] = (data) => {
+        delete window[cb];
+        script.remove();
+        resolve(data);
+      };
+
+      const sep = url.includes("?") ? "&" : "?";
+      const script = document.createElement("script");
+      script.src = url + sep + "callback=" + cb;
+      script.onerror = () => {
+        delete window[cb];
+        script.remove();
+        reject(new Error("Falha ao carregar do Apps Script."));
+      };
+
+      document.body.appendChild(script);
+    });
+  }
+
+  async function carregarHorarios() {
+    listaEl.innerHTML = "";
+    setAlerta("");
+    statusBadge.textContent = "Carregando horários…";
+
+    try {
+      const data = await jsonp(WEBAPP_URL + "?action=list");
+      if (!data.ok) throw new Error(data.error || "Erro ao listar horários.");
+
+      const slots = data.slots || [];
+      statusBadge.textContent = slots.length
+        ? (slots.length + " horários disponíveis")
+        : "Nenhum horário disponível";
+
+      if (!slots.length) {
+        setAlerta('<div class="erro">No momento não há horários DISPONÍVEIS na planilha.</div>', "erro");
+        return;
+      }
+
+      for (const s of slots) {
+        const div = document.createElement("div");
+        div.className = "slot";
+        div.innerHTML = `
+          <div>
+            <b>${s.data} • ${s.hora}</b>
+            <small>${s.servico} • ${s.preco}</small>
+          </div>
+          <button class="btn" type="button">RESERVAR</button>
+        `;
+
+        const btn = div.querySelector("button");
+        btn.addEventListener("click", async () => {
+          btn.disabled = true;
+          btn.textContent = "Reservando…";
+          setAlerta("");
+
+          try {
+            const res = await jsonp(WEBAPP_URL + "?action=reserve&row=" + encodeURIComponent(s.row));
+            if (!res.ok) throw new Error(res.error || "Não foi possível reservar.");
+
+            div.remove();
+            statusBadge.textContent = "Reservado ✅";
+
+            setAlerta(
+              `<div class="ok"><b>Horário reservado!</b><br>
+              Agora preencha o formulário abaixo para confirmar.<br>
+              <span style="opacity:.85">(${s.data} • ${s.hora} — ${s.servico})</span>
+              </div>`,
+              "ok"
+            );
+
+            // rola pra baixo pro formulário
+            window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+
+          } catch (err) {
+            btn.disabled = false;
+            btn.textContent = "RESERVAR";
+            setAlerta(`<div class="erro">${err.message}</div>`, "erro");
+          }
+        });
+
+        listaEl.appendChild(div);
+      }
+
+    } catch (err) {
+      statusBadge.textContent = "Erro";
+      setAlerta(`<div class="erro">${err.message}</div>`, "erro");
+    }
+  }
+
+  btnAtualizar.addEventListener("click", carregarHorarios);
+  carregarHorarios();
+</script>
 
 </body>
 </html>
