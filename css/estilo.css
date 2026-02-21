@@ -33,3 +33,39 @@
     height:200px;
   }
 }
+/* ANTES DEPOIS */
+.antes-depois{
+  max-width:850px;
+  margin:40px auto;
+  padding:0 18px;
+}
+
+.compare{
+  position:relative;
+  max-width:650px;
+  margin:0 auto;
+  overflow:hidden;
+  border-radius:20px;
+  box-shadow:0 14px 35px rgba(0,0,0,.08);
+}
+
+.compare img{
+  width:100%;
+  display:block;
+}
+
+.img-top{
+  position:absolute;
+  top:0;
+  left:0;
+  width:50%;
+  overflow:hidden;
+}
+
+#slider{
+  position:absolute;
+  bottom:10px;
+  left:50%;
+  transform:translateX(-50%);
+  width:80%;
+}
