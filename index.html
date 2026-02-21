@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Agendamento | Studio Gabi Dummer</title>
 
-  <!-- caminhos com ./ evitam problemas em GitHub Pages e subpastas -->
   <link rel="icon" type="image/png" href="./img/favicon.png" />
   <link rel="stylesheet" href="./css/estilo.css" />
 </head>
@@ -106,11 +105,14 @@
       <h2 class="titulo-sec">Transformações reais</h2>
       <p class="sub-sec">Arraste para ver o antes e depois.</p>
 
-      <img src="./img/antes.jpg" class="img-base" alt="Antes">
+      <div class="compare">
+        <!-- imagem de baixo (Antes) -->
+        <img src="./img/nova-foto.jpg" class="img-base" alt="Antes">
 
-<div class="img-top" id="imgTop">
-  <img src="./img/depois.jpg" alt="Depois">
-</div>
+        <!-- imagem de cima (Depois) -->
+        <div class="img-top" id="imgTop">
+          <img src="./img/professora2.jpg" alt="Depois">
+        </div>
 
         <input type="range" min="0" max="100" value="50" id="slider" aria-label="Controle antes e depois">
       </div>
@@ -161,10 +163,8 @@
     </div>
   </footer>
 
-  <!-- scripts com defer (carrega sem travar o layout) -->
   <script src="./js/carrossel.js" defer></script>
   <script src="./js/antes-depois.js" defer></script>
 
 </body>
 </html>
-
