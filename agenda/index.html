@@ -208,6 +208,41 @@
     return `${d}/${m}/${y}`;
   }
 
+  /***********************
+   * ✅ NOVO (ADICIONADO):
+   * - bloqueia datas passadas
+   * - aviso amigável quando não tem horários (folga ou agenda cheia)
+   ***********************/
+  function bloquearDatasPassadas_(){
+    const hoje = new Date();
+    const y = hoje.getFullYear();
+    const m = String(hoje.getMonth()+1).padStart(2,"0");
+    const d = String(hoje.getDate()).padStart(2,"0");
+    diaEl.min = `${y}-${m}-${d}`;
+  }
+
+  function avisarSeFolgaOuSemHorario_(dataStr){
+    // O Apps Script já remove folgas do list.
+    // Aqui só detecta quando NÃO existe nenhum slot nessa data e mostra a msg.
+    const tem = allSlots.some(s => s.data === dataStr);
+    if(!tem){
+      setAlerta(
+        `<div class="erro">
+          <b>${dataStr}</b> não tem horários disponíveis.<br>
+          Pode ser <b>folga</b> ou agenda cheia. Selecione outra data.
+        </div>`,
+        "erro"
+      );
+      statusBadge.textContent = "Nenhum horário disponível";
+      return true;
+    }
+    return false;
+  }
+
+  // aplica
+  bloquearDatasPassadas_();
+  /***********************/
+
   function renderLista(slotsFiltrados) {
     listaEl.innerHTML = "";
     setAlerta("");
@@ -256,6 +291,9 @@
 
           // re-render com a data selecionada
           const dataSel = ddmmyyyyFromInput(diaEl.value);
+          // ✅ NOVO: avisa se ficou sem horários (folga/cheio)
+          avisarSeFolgaOuSemHorario_(dataSel);
+
           const filtrados = allSlots.filter(x => x.data === dataSel);
           renderLista(filtrados);
 
@@ -301,6 +339,10 @@
       }
 
       const dataSel = ddmmyyyyFromInput(diaEl.value);
+
+      // ✅ NOVO: avisa se não tem horários (folga/cheio)
+      avisarSeFolgaOuSemHorario_(dataSel);
+
       const filtrados = allSlots.filter(s => s.data === dataSel);
       renderLista(filtrados);
 
@@ -316,6 +358,10 @@
   diaEl.addEventListener("change", () => {
     const dataSel = ddmmyyyyFromInput(diaEl.value);
     diaBadge.textContent = dataSel || "Nenhuma data escolhida";
+
+    // ✅ NOVO: avisa se não tem horários (folga/cheio)
+    avisarSeFolgaOuSemHorario_(dataSel);
+
     const filtrados = allSlots.filter(s => s.data === dataSel);
     renderLista(filtrados);
   });
