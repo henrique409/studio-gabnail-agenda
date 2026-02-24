@@ -245,14 +245,23 @@ body{
 }
 
 /* =======================
-   ⭐ CARROSSEL AJUSTADO
-   (NÃO MUDA SEU LAYOUT)
-======================= */
-
+   GALERIA / CARROSSEL
+   ======================= */
 .galeria{
   max-width:850px;
   margin: 0 auto;
   padding: 10px 18px 30px;
+}
+
+.titulo-sec{
+  margin: 10px 0 6px;
+  font-size: 28px;
+  color:#d63384;
+}
+
+.sub-sec{
+  margin:0 0 16px;
+  opacity:.8;
 }
 
 .carousel{
@@ -273,12 +282,13 @@ body{
 
 .track{
   display:flex;
-  transition: transform .45s ease; /* ⭐ ajuste suave */
+  transition: transform .45s ease;
   will-change: transform;
 }
 
 .slide{
-  min-width:100%;
+  flex: 0 0 100%;
+  min-width: 100%;
 }
 
 .slide img{
@@ -287,6 +297,10 @@ body{
   object-fit:cover;
   display:block;
   border-radius:16px;
+}
+
+@media(max-width: 800px){
+  .slide img{ height:200px; }
 }
 
 .nav{
@@ -302,6 +316,7 @@ body{
   cursor:pointer;
   background: rgba(255,255,255,.92);
   box-shadow:0 10px 25px rgba(0,0,0,.12);
+  z-index: 5;
 }
 
 .nav.prev{ left:10px; }
@@ -330,8 +345,7 @@ body{
 
 /* =======================
    ANTES / DEPOIS
-======================= */
-
+   ======================= */
 .antes-depois{
   max-width:850px;
   margin:40px auto;
