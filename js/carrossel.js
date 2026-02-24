@@ -1,53 +1,74 @@
-(function () {
-  const root = document.querySelector("[data-carousel]");
-  if (!root) return;
+(() => {
+  const carousels = document.querySelectorAll("[data-carousel]");
 
-  const track = root.querySelector("[data-track]");
-  const slides = Array.from(root.querySelectorAll("[data-slide]"));
-  const prev = root.querySelector("[data-prev]");
-  const next = root.querySelector("[data-next]");
-  const dotsWrap = root.querySelector("[data-dots]");
+  carousels.forEach((carousel) => {
+    const track = carousel.querySelector("[data-track]");
+    const prevBtn = carousel.querySelector("[data-prev]");
+    const nextBtn = carousel.querySelector("[data-next]");
+    const dotsWrap = carousel.querySelector("[data-dots]");
 
-  let i = 0;
+    if (!track) return;
 
-  function setActive(idx) {
-    i = (idx + slides.length) % slides.length;
-    track.style.transform = `translateX(${-i * 100}%)`;
+    const slides = Array.from(track.children).filter(el => el.classList.contains("slide"));
+    if (!slides.length) return;
 
+    let index = 0;
+
+    // cria bolinhas
+    let dots = [];
     if (dotsWrap) {
-      Array.from(dotsWrap.children).forEach((d, di) => {
-        d.setAttribute("aria-current", di === i ? "true" : "false");
+      dotsWrap.innerHTML = "";
+      dots = slides.map((_, i) => {
+        const b = document.createElement("button");
+        b.className = "dot";
+        b.type = "button";
+        b.setAttribute("aria-label", `Ir para foto ${i + 1}`);
+        b.addEventListener("click", () => goTo(i));
+        dotsWrap.appendChild(b);
+        return b;
       });
     }
-  }
 
-  if (dotsWrap) {
-    dotsWrap.innerHTML = "";
-    slides.forEach((_, di) => {
-      const b = document.createElement("button");
-      b.type = "button";
-      b.className = "dot";
-      b.addEventListener("click", () => setActive(di));
-      dotsWrap.appendChild(b);
-    });
-  }
+    function update() {
+      track.style.transform = `translateX(-${index * 100}%)`;
 
-  prev?.addEventListener("click", () => setActive(i - 1));
-  next?.addEventListener("click", () => setActive(i + 1));
+      if (dots.length) {
+        dots.forEach((d, i) => d.setAttribute("aria-current", i === index ? "true" : "false"));
+      }
 
-  // swipe no celular
-  let startX = 0;
-  track.addEventListener("touchstart", (e) => (startX = e.touches[0].clientX), { passive: true });
-  track.addEventListener("touchend", (e) => {
-    const endX = e.changedTouches[0].clientX;
-    const diff = endX - startX;
-    if (Math.abs(diff) > 40) setActive(diff > 0 ? i - 1 : i + 1);
+      if (prevBtn) prevBtn.disabled = (index === 0);
+      if (nextBtn) nextBtn.disabled = (index === slides.length - 1);
+    }
+
+    function goTo(i) {
+      index = Math.max(0, Math.min(slides.length - 1, i));
+      update();
+    }
+
+    if (prevBtn) prevBtn.addEventListener("click", () => goTo(index - 1));
+    if (nextBtn) nextBtn.addEventListener("click", () => goTo(index + 1));
+
+    // swipe no celular (opcional, mas ajuda)
+    let startX = 0;
+    let touching = false;
+
+    carousel.addEventListener("touchstart", (e) => {
+      touching = true;
+      startX = e.touches[0].clientX;
+    }, { passive: true });
+
+    carousel.addEventListener("touchend", (e) => {
+      if (!touching) return;
+      touching = false;
+      const endX = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientX : startX;
+      const diff = endX - startX;
+
+      if (Math.abs(diff) > 40) {
+        if (diff < 0) goTo(index + 1);
+        else goTo(index - 1);
+      }
+    }, { passive: true });
+
+    update();
   });
-
-  // auto play (opcional)
-  let timer = setInterval(() => setActive(i + 1), 4500);
-  root.addEventListener("mouseenter", () => clearInterval(timer));
-  root.addEventListener("mouseleave", () => (timer = setInterval(() => setActive(i + 1), 4500)));
-
-  setActive(0);
 })();
