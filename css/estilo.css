@@ -221,3 +221,60 @@ body{
   cursor:pointer;
   color:#ccc;
 }
+/* RESPONSIVO CELULAR */
+@media(max-width: 768px){
+
+  /* HERO */
+  .hero{
+    flex-direction:column;
+    padding:20px;
+    gap:20px;
+    text-align:center;
+  }
+
+  .hero-texto{
+    align-items:center;
+  }
+
+  .hero-texto h1{
+    font-size:24px;
+  }
+
+  .botao-principal{
+    width:100%;
+    text-align:center;
+  }
+
+  /* IMAGEM */
+  .slide img{
+    height:280px;
+  }
+
+  /* PROVA SOCIAL */
+  .prova-container{
+    flex-direction:column;
+    align-items:center;
+  }
+
+  .prova-card img{
+    width:100%;
+    max-width:280px;
+  }
+
+  /* AVALIAÇÃO */
+  .form-avaliacao input,
+  .form-avaliacao textarea{
+    width:90%;
+  }
+
+  .dep-card{
+    width:90%;
+  }
+
+  /* TOPO */
+  .topo-container{
+    flex-direction:column;
+    gap:10px;
+  }
+
+}
