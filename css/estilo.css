@@ -452,9 +452,14 @@ body{
   min-width: 100%;
 }
 
+.hero-imagem {
+  max-width: 480px; /* antes era 400px */
+  width: 100%;
+}
+
 .hero-imagem .slide img {
   width: 100%;
-  height: 400px; /* 🔥 AJUSTE AQUI se quiser maior/menor */
-  object-fit: cover; /* mantém proporção bonita */
+  height: 480px; /* antes era 400px */
+  object-fit: cover;
   border-radius: 12px;
 }
