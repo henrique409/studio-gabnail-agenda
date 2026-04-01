@@ -1,40 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agendamento | Studio Teste Nails</title>
 
-  <link rel="icon" type="image/png" href="./img/favicon.png" />
-  <link rel="stylesheet" href="./css/estilo.css" />
+  <link rel="stylesheet" href="./css/estilo.css">
 </head>
 
-<body id="topo">
-
-<header class="topo">
-  <div class="topo-container">
-
-    <a class="brand" href="#topo">
-      <img src="./img/logo.png" />
-      <span class="nome-studio">studio teste nails</span>
-    </a>
-
-    <nav class="topo-links">
-      <a class="link-icone" href="https://instagram.com/studio.teste" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" />
-      </a>
-
-      <a class="link-icone" href="https://wa.me/5519991046126?text=Olá%20quero%20agendar%20um%20horário" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" />
-      </a>
-    </nav>
-
-  </div>
-</header>
+<body>
 
 <section class="hero">
+  
   <div class="hero-texto">
-
     <span class="tag">Curso Profissional de Unhas</span>
 
     <h1>
@@ -51,32 +29,17 @@
       Mesmo começando do zero, você pode <strong>transformar sua renda</strong>
       e começar a <strong>atender com segurança e qualidade</strong>.
     </p>
-
-    <span class="tag">Conheça a profissional</span>
-
-    <h2 style="margin-top:10px; color:#d63384;">A história da Gabriela</h2>
-
-    <p>✨ Tudo começou com um sonho simples… e muita coragem.</p>
-    <p>💅 Começou fazendo um curso e atendendo em casa.</p>
-    <p>🏡 Conquistou clientes com esforço e dedicação.</p>
-    <p>💼 Trabalhou em salão e evoluiu muito.</p>
-    <p>🔥 Nunca desistiu, mesmo nos momentos difíceis.</p>
-    <p>✨ Hoje tem seu próprio studio.</p>
-
-    <a href="./agenda/" class="botao-comprar">
-      QUERO APRENDER AGORA
-    </a>
-
   </div>
 
+  <!-- CARROSSEL -->
   <div class="hero-imagem">
 
-    <div class="carousel" data-carousel>
+    <div class="carousel">
 
-      <button class="nav prev" type="button" data-prev>‹</button>
+      <button class="nav prev">‹</button>
 
       <div class="viewport">
-        <div class="track" data-track>
+        <div class="track">
 
           <div class="slide">
             <img src="./img/gabriela-inicio-carreira.jpg">
@@ -93,58 +56,36 @@
         </div>
       </div>
 
-      <button class="nav next" type="button" data-next>›</button>
-      <div class="dots" data-dots></div>
+      <button class="nav next">›</button>
 
     </div>
 
   </div>
+
 </section>
 
+<!-- JS DO CARROSSEL -->
 <script>
-(() => {
-  const carousels = document.querySelectorAll("[data-carousel]");
+const track = document.querySelector(".track");
+const slides = document.querySelectorAll(".slide");
+const next = document.querySelector(".next");
+const prev = document.querySelector(".prev");
 
-  carousels.forEach((carousel) => {
-    const track = carousel.querySelector("[data-track]");
-    const prevBtn = carousel.querySelector("[data-prev]");
-    const nextBtn = carousel.querySelector("[data-next]");
-    const dotsWrap = carousel.querySelector("[data-dots]");
+let index = 0;
 
-    const slides = Array.from(track.children);
-    let index = 0;
+function update(){
+  track.style.transform = "translateX(-" + index * 100 + "%)";
+}
 
-    let dots = [];
+next.onclick = () => {
+  index = (index + 1) % slides.length;
+  update();
+};
 
-    if (dotsWrap) {
-      dotsWrap.innerHTML = "";
-      dots = slides.map((_, i) => {
-        const b = document.createElement("button");
-        b.className = "dot";
-        b.onclick = () => goTo(i);
-        dotsWrap.appendChild(b);
-        return b;
-      });
-    }
-
-    function update() {
-      track.style.transform = `translateX(-${index * 100}%)`;
-      dots.forEach((d, i) =>
-        d.setAttribute("aria-current", i === index)
-      );
-    }
-
-    function goTo(i) {
-      index = Math.max(0, Math.min(slides.length - 1, i));
-      update();
-    }
-
-    prevBtn.onclick = () => goTo(index - 1);
-    nextBtn.onclick = () => goTo(index + 1);
-
-    update();
-  });
-})();
+prev.onclick = () => {
+  index = (index - 1 + slides.length) % slides.length;
+  update();
+};
 </script>
 
 </body>
