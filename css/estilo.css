@@ -468,3 +468,20 @@ body{
   object-fit: cover;
   border-radius: 12px;
 }
+/* TÍTULO PRINCIPAL */
+.hero-texto h1 {
+  font-size: 32px; /* diminui (antes devia estar ~40+) */
+  line-height: 1.2;
+}
+
+/* SUBTÍTULO / PARÁGRAFOS */
+.hero-texto p {
+  font-size: 16px; /* menor e mais elegante */
+  line-height: 1.5;
+  max-width: 500px; /* evita ficar muito largo */
+}
+
+/* NEGRITO mais suave */
+.hero-texto strong {
+  font-weight: 600; /* antes pode estar muito pesado */
+}
