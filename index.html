@@ -10,6 +10,7 @@
 
 <body>
 
+<!-- HERO -->
 <section class="hero">
   
   <div class="hero-texto">
@@ -29,6 +30,16 @@
       Mesmo começando do zero, você pode <strong>transformar sua renda</strong>
       e começar a <strong>atender com segurança e qualidade</strong>.
     </p>
+
+    <h2 style="margin-top:20px; color:#d63384;">A história da Gabriela</h2>
+
+    <p>✨ Tudo começou com um sonho simples… e muita coragem.</p>
+    <p>💅 Começou fazendo um curso e atendendo em casa.</p>
+    <p>🏡 Conquistou clientes com esforço e dedicação.</p>
+    <p>💼 Trabalhou em salão e evoluiu muito.</p>
+    <p>🔥 Nunca desistiu, mesmo nos momentos difíceis.</p>
+    <p>✨ Hoje tem seu próprio studio.</p>
+
   </div>
 
   <!-- CARROSSEL -->
@@ -64,28 +75,62 @@
 
 </section>
 
-<!-- JS DO CARROSSEL -->
+<!-- GALERIA -->
+<section class="galeria">
+  <h2 style="text-align:center; margin:30px 0; color:#d63384;">
+    Trabalhos recentes
+  </h2>
+
+  <div class="carousel">
+
+    <button class="nav prev">‹</button>
+
+    <div class="viewport">
+      <div class="track">
+
+        <div class="slide"><img src="./img/galeria/01.jpg"></div>
+        <div class="slide"><img src="./img/galeria/02.jpg"></div>
+        <div class="slide"><img src="./img/galeria/03.jpg"></div>
+
+      </div>
+    </div>
+
+    <button class="nav next">›</button>
+
+  </div>
+</section>
+
+<!-- RODAPÉ -->
+<footer style="text-align:center; padding:30px;">
+  <p>Studio Teste Nails ©</p>
+</footer>
+
+<!-- JS -->
 <script>
-const track = document.querySelector(".track");
-const slides = document.querySelectorAll(".slide");
-const next = document.querySelector(".next");
-const prev = document.querySelector(".prev");
+document.querySelectorAll(".carousel").forEach(carousel => {
 
-let index = 0;
+  const track = carousel.querySelector(".track");
+  const slides = carousel.querySelectorAll(".slide");
+  const next = carousel.querySelector(".next");
+  const prev = carousel.querySelector(".prev");
 
-function update(){
-  track.style.transform = "translateX(-" + index * 100 + "%)";
-}
+  let index = 0;
 
-next.onclick = () => {
-  index = (index + 1) % slides.length;
-  update();
-};
+  function update(){
+    track.style.transform = "translateX(-" + index * 100 + "%)";
+  }
 
-prev.onclick = () => {
-  index = (index - 1 + slides.length) % slides.length;
-  update();
-};
+  next.onclick = () => {
+    index = (index + 1) % slides.length;
+    update();
+  };
+
+  prev.onclick = () => {
+    index = (index - 1 + slides.length) % slides.length;
+    update();
+  };
+
+});
 </script>
 
 </body>
