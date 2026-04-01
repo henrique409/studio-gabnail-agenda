@@ -33,13 +33,14 @@
 
 <!-- HERO -->
 <section class="hero">
+
   <div class="hero-texto">
 
     <span class="tag">Curso Profissional de Unhas</span>
 
     <h1>
       Aprenda alongamento de unhas e 
-      <span style="color:#ff2e93;">comece a faturar ainda esse mês</span>
+      <span class="destaque">comece a faturar ainda esse mês</span>
     </h1>
 
     <p>
@@ -58,12 +59,12 @@
 
     <h2>A história da Gabriela</h2>
 
-    <p>✨ Tudo começou com um sonho simples… e muita coragem.</p>
-    <p>💅 Começou fazendo um curso e atendendo em casa.</p>
-    <p>🏡 Conquistou clientes com esforço e dedicação.</p>
-    <p>💼 Trabalhou em salão e evoluiu muito.</p>
-    <p>🔥 Nunca desistiu, mesmo nos momentos difíceis.</p>
-    <p>✨ Hoje tem seu próprio studio.</p>
+    <p>✨ Tudo começou com um sonho simples…</p>
+    <p>💅 Começou atendendo em casa</p>
+    <p>🏡 Conquistou clientes com esforço</p>
+    <p>💼 Evoluiu no salão</p>
+    <p>🔥 Nunca desistiu</p>
+    <p>✨ Hoje tem seu próprio studio</p>
 
   </div>
 
@@ -84,6 +85,7 @@
 
     </div>
   </div>
+
 </section>
 
 <!-- PROVA SOCIAL -->
@@ -103,23 +105,22 @@
 
     <div class="prova-card">
       <img src="./img/resultado1.jpg">
-      <p>Resultado de aluna</p>
+      <p>Resultado</p>
     </div>
   </div>
 </section>
 
-<!-- AVALIAÇÃO PROFISSIONAL -->
+<!-- AVALIAÇÃO -->
 <section class="depoimentos">
-  <h2>⭐ Avaliação das clientes</h2>
+  <h2>⭐ Avaliações</h2>
 
-  <div class="dep-container" id="lista-depoimentos"></div>
+  <div id="lista-depoimentos" class="dep-container"></div>
 
   <div class="form-avaliacao">
+    <input id="nome" placeholder="Seu nome">
+    <textarea id="comentario" placeholder="Comentário"></textarea>
 
-    <input type="text" id="nome" placeholder="Seu nome">
-    <textarea id="comentario" placeholder="Seu comentário"></textarea>
-
-    <div class="estrelas" id="estrelas">
+    <div id="estrelas" class="estrelas">
       <span onclick="setNota(1)">★</span>
       <span onclick="setNota(2)">★</span>
       <span onclick="setNota(3)">★</span>
@@ -127,38 +128,29 @@
       <span onclick="setNota(5)">★</span>
     </div>
 
-    <button onclick="enviarAvaliacao()">Enviar avaliação</button>
-
+    <button onclick="enviar()">Enviar</button>
   </div>
 </section>
 
-<!-- RODAPÉ -->
 <footer>
   <p>Studio Gabriela ©</p>
 </footer>
 
 <script>
 // CARROSSEL
-document.querySelectorAll(".carousel").forEach(carousel => {
-  const track = carousel.querySelector(".track");
-  const slides = carousel.querySelectorAll(".slide");
-  const next = carousel.querySelector(".next");
-  const prev = carousel.querySelector(".prev");
+document.querySelectorAll(".carousel").forEach(c => {
+  const track = c.querySelector(".track");
+  const slides = c.querySelectorAll(".slide");
+  let i = 0;
 
-  let index = 0;
-
-  function update(){
-    track.style.transform = "translateX(-" + index * 100 + "%)";
-  }
-
-  next.onclick = () => {
-    index = (index + 1) % slides.length;
-    update();
+  c.querySelector(".next").onclick = () => {
+    i = (i + 1) % slides.length;
+    track.style.transform = `translateX(-${i*100}%)`;
   };
 
-  prev.onclick = () => {
-    index = (index - 1 + slides.length) % slides.length;
-    update();
+  c.querySelector(".prev").onclick = () => {
+    i = (i - 1 + slides.length) % slides.length;
+    track.style.transform = `translateX(-${i*100}%)`;
   };
 });
 
@@ -167,54 +159,39 @@ let nota = 5;
 
 function setNota(n){
   nota = n;
-
-  document.querySelectorAll("#estrelas span").forEach((star, i) => {
-    star.style.color = i < n ? "gold" : "#ccc";
-  });
+  document.querySelectorAll("#estrelas span")
+    .forEach((s,i)=> s.style.color = i<n ? "gold":"#ccc");
 }
 
-function enviarAvaliacao(){
+function enviar(){
   const nome = document.getElementById("nome").value;
   const comentario = document.getElementById("comentario").value;
 
-  if(!nome || !comentario){
-    alert("Preencha tudo!");
-    return;
-  }
+  if(!nome || !comentario) return alert("Preencha tudo");
 
-  const lista = JSON.parse(localStorage.getItem("avaliacoes")) || [];
-
+  const lista = JSON.parse(localStorage.getItem("avs")) || [];
   lista.push({nome, comentario, nota});
+  localStorage.setItem("avs", JSON.stringify(lista));
 
-  localStorage.setItem("avaliacoes", JSON.stringify(lista));
-
-  renderAvaliacoes();
-
-  nome.value = "";
-  comentario.value = "";
+  carregar();
 }
 
-function renderAvaliacoes(){
-  const lista = JSON.parse(localStorage.getItem("avaliacoes")) || [];
-  const container = document.getElementById("lista-depoimentos");
+function carregar(){
+  const lista = JSON.parse(localStorage.getItem("avs")) || [];
+  const el = document.getElementById("lista-depoimentos");
+  el.innerHTML = "";
 
-  container.innerHTML = "";
-
-  lista.forEach(av => {
-    const card = document.createElement("div");
-    card.className = "dep-card";
-
-    card.innerHTML = `
-      <p>"${av.comentario}"</p>
-      <span>— ${av.nome}</span>
-      <div style="color:gold;">${"★".repeat(av.nota)}</div>
-    `;
-
-    container.appendChild(card);
+  lista.forEach(a=>{
+    el.innerHTML += `
+      <div class="dep-card">
+        <p>"${a.comentario}"</p>
+        <span>${a.nome}</span>
+        <div class="stars">${"★".repeat(a.nota)}</div>
+      </div>`;
   });
 }
 
-renderAvaliacoes();
+carregar();
 setNota(5);
 </script>
 
