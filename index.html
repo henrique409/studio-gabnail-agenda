@@ -18,6 +18,16 @@
       <span>Studio Gabriela</span>
     </div>
 
+    <div class="topo-botoes">
+      <a href="#" class="btn-icone">
+        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png">
+      </a>
+
+      <a href="#" class="btn-icone">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
+      </a>
+    </div>
+
   </div>
 </header>
 
@@ -32,12 +42,28 @@
       <span style="color:#ff2e93;">comece a faturar ainda esse mês</span>
     </h1>
 
-    <p>Domine <strong>fibra de vidro</strong>, <strong>molde F1</strong>,
-    <strong>esmaltação em gel</strong> e <strong>postiça realista</strong>.</p>
+    <p>
+      Domine <strong>fibra de vidro</strong>, <strong>molde F1</strong>,
+      <strong>esmaltação em gel</strong> e <strong>postiça realista</strong>.
+    </p>
 
-    <a href="#" class="botao-principal">
+    <p>
+      Mesmo começando do zero, você pode <strong>transformar sua renda</strong>
+      e começar a <strong>atender com segurança e qualidade</strong>.
+    </p>
+
+    <a href="./agenda/" class="botao-principal">
       QUERO APRENDER AGORA
     </a>
+
+    <h2>A história da Gabriela</h2>
+
+    <p>✨ Tudo começou com um sonho simples… e muita coragem.</p>
+    <p>💅 Começou fazendo um curso e atendendo em casa.</p>
+    <p>🏡 Conquistou clientes com esforço e dedicação.</p>
+    <p>💼 Trabalhou em salão e evoluiu muito.</p>
+    <p>🔥 Nunca desistiu, mesmo nos momentos difíceis.</p>
+    <p>✨ Hoje tem seu próprio studio.</p>
 
   </div>
 
@@ -60,19 +86,38 @@
   </div>
 </section>
 
-<!-- ⭐ AVALIAÇÕES -->
+<!-- PROVA SOCIAL -->
+<section class="prova-social">
+  <h2>Resultados reais</h2>
+
+  <div class="prova-container">
+    <div class="prova-card">
+      <img src="./img/antes.jpg">
+      <p>Antes</p>
+    </div>
+
+    <div class="prova-card">
+      <img src="./img/depois.jpg">
+      <p>Depois</p>
+    </div>
+
+    <div class="prova-card">
+      <img src="./img/resultado1.jpg">
+      <p>Resultado de aluna</p>
+    </div>
+  </div>
+</section>
+
+<!-- AVALIAÇÃO PROFISSIONAL -->
 <section class="depoimentos">
-
   <h2>⭐ Avaliação das clientes</h2>
-
-  <div id="media-nota">Média: 5.0 ⭐</div>
 
   <div class="dep-container" id="lista-depoimentos"></div>
 
   <div class="form-avaliacao">
 
     <input type="text" id="nome" placeholder="Seu nome">
-    <textarea id="comentario" placeholder="Escreva seu comentário"></textarea>
+    <textarea id="comentario" placeholder="Seu comentário"></textarea>
 
     <div class="estrelas" id="estrelas">
       <span onclick="setNota(1)">★</span>
@@ -85,11 +130,14 @@
     <button onclick="enviarAvaliacao()">Enviar avaliação</button>
 
   </div>
-
 </section>
 
-<script>
+<!-- RODAPÉ -->
+<footer>
+  <p>Studio Gabriela ©</p>
+</footer>
 
+<script>
 // CARROSSEL
 document.querySelectorAll(".carousel").forEach(carousel => {
   const track = carousel.querySelector(".track");
@@ -114,58 +162,15 @@ document.querySelectorAll(".carousel").forEach(carousel => {
   };
 });
 
-// ⭐ SISTEMA PRO
+// AVALIAÇÃO
 let nota = 5;
 
 function setNota(n){
   nota = n;
 
-  const estrelas = document.querySelectorAll("#estrelas span");
-  estrelas.forEach((star, i) => {
+  document.querySelectorAll("#estrelas span").forEach((star, i) => {
     star.style.color = i < n ? "gold" : "#ccc";
   });
-}
-
-function salvarAvaliacoes(lista){
-  localStorage.setItem("avaliacoes", JSON.stringify(lista));
-}
-
-function carregarAvaliacoes(){
-  return JSON.parse(localStorage.getItem("avaliacoes")) || [];
-}
-
-function atualizarMedia(lista){
-  if(lista.length === 0){
-    document.getElementById("media-nota").innerText = "Sem avaliações";
-    return;
-  }
-
-  const soma = lista.reduce((acc, item) => acc + item.nota, 0);
-  const media = (soma / lista.length).toFixed(1);
-
-  document.getElementById("media-nota").innerText =
-    `Média: ${media} ⭐ (${lista.length} avaliações)`;
-}
-
-function renderizar(){
-  const lista = carregarAvaliacoes();
-  const container = document.getElementById("lista-depoimentos");
-
-  container.innerHTML = "";
-
-  lista.forEach(item => {
-    const card = document.createElement("div");
-    card.className = "dep-card";
-
-    card.innerHTML = `
-      <p>"${item.comentario}"</p>
-      <span>— ${item.nome} | ${"⭐".repeat(item.nota)}</span>
-    `;
-
-    container.appendChild(card);
-  });
-
-  atualizarMedia(lista);
 }
 
 function enviarAvaliacao(){
@@ -177,22 +182,40 @@ function enviarAvaliacao(){
     return;
   }
 
-  const lista = carregarAvaliacoes();
+  const lista = JSON.parse(localStorage.getItem("avaliacoes")) || [];
 
-  lista.push({ nome, comentario, nota });
+  lista.push({nome, comentario, nota});
 
-  salvarAvaliacoes(lista);
-  renderizar();
+  localStorage.setItem("avaliacoes", JSON.stringify(lista));
 
-  document.getElementById("nome").value = "";
-  document.getElementById("comentario").value = "";
+  renderAvaliacoes();
 
-  setNota(5);
+  nome.value = "";
+  comentario.value = "";
 }
 
-setNota(5);
-renderizar();
+function renderAvaliacoes(){
+  const lista = JSON.parse(localStorage.getItem("avaliacoes")) || [];
+  const container = document.getElementById("lista-depoimentos");
 
+  container.innerHTML = "";
+
+  lista.forEach(av => {
+    const card = document.createElement("div");
+    card.className = "dep-card";
+
+    card.innerHTML = `
+      <p>"${av.comentario}"</p>
+      <span>— ${av.nome}</span>
+      <div style="color:gold;">${"★".repeat(av.nota)}</div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+renderAvaliacoes();
+setNota(5);
 </script>
 
 </body>
