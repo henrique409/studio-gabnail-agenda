@@ -117,7 +117,8 @@ body{
 
 .slide img{
   width:100%;
-  height:450px;
+  height:auto; /* 🔥 resolve o achatamento */
+  aspect-ratio: 3/4; /* mantém proporção bonita */
   object-fit:cover;
   border-radius:16px;
 }
@@ -275,6 +276,40 @@ body{
   .topo-container{
     flex-direction:column;
     gap:10px;
+  }
+
+}
+@media(max-width:768px){
+
+  .hero{
+    flex-direction:column;
+    padding:20px;
+  }
+
+  .carousel{
+    max-width:100%;
+  }
+
+  .slide img{
+    aspect-ratio: 4/5; /* 🔥 melhor pro celular */
+  }
+
+  .hero-texto h1{
+    font-size:26px;
+  }
+
+  .botao-principal{
+    width:100%;
+    text-align:center;
+  }
+
+  .prova-container{
+    flex-direction:column;
+    align-items:center;
+  }
+
+  .dep-card{
+    width:90%;
   }
 
 }
