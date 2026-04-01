@@ -184,3 +184,19 @@ body{
 .btn-icone img{
   width:22px;
 }
+.botao-principal{
+  display:inline-block;
+  margin-top:18px;
+  background:linear-gradient(45deg,#ff2e93,#ff6bb5);
+  color:#fff;
+  padding:16px 26px;
+  border-radius:14px;
+  font-weight:900;
+  text-decoration:none;
+  box-shadow:0 10px 30px rgba(255,46,147,.3);
+  transition:.25s;
+}
+
+.botao-principal:hover{
+  transform:scale(1.05);
+}
