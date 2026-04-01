@@ -206,3 +206,39 @@ body{
     height:260px;
   }
 }
+.prova-social{
+  max-width:1100px;
+  margin:40px auto;
+  text-align:center;
+}
+
+.prova-social h2{
+  color:#d63384;
+  margin-bottom:20px;
+}
+
+.prova-container{
+  display:flex;
+  gap:20px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+.prova-card{
+  background:#fff;
+  padding:10px;
+  border-radius:16px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+
+.prova-card img{
+  width:220px;
+  height:220px;
+  object-fit:cover;
+  border-radius:12px;
+}
+
+.prova-card p{
+  margin-top:8px;
+  font-weight:600;
+}
