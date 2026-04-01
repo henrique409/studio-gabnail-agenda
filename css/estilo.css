@@ -489,7 +489,7 @@ body{
   margin-bottom: 10px; /* diminui espaço abaixo do título */
 }
 
-.hero-texto p {
-  margin-top: 6px;   /* menos espaço acima */
-  margin-bottom: 10px; /* menos espaço entre parágrafos */
+.hero-texto .tag {
+  margin-bottom: 6px;
+  display: inline-block;
 }
