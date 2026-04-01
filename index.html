@@ -19,11 +19,11 @@
     </div>
 
     <div class="topo-botoes">
-      <a href="#" class="btn-icone">
+      <a href="https://instagram.com" target="_blank" class="btn-icone">
         <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png">
       </a>
 
-      <a href="#" class="btn-icone">
+      <a href="https://wa.me/5519999999999" target="_blank" class="btn-icone">
         <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
       </a>
     </div>
@@ -40,7 +40,7 @@
 
     <h1>
       Aprenda alongamento de unhas e 
-      <span class="destaque">comece a faturar ainda esse mês</span>
+      <span style="color:#ff2e93;">comece a faturar ainda esse mês</span>
     </h1>
 
     <p>
@@ -59,12 +59,12 @@
 
     <h2>A história da Gabriela</h2>
 
-    <p>✨ Tudo começou com um sonho simples…</p>
-    <p>💅 Começou atendendo em casa</p>
-    <p>🏡 Conquistou clientes com esforço</p>
-    <p>💼 Evoluiu no salão</p>
-    <p>🔥 Nunca desistiu</p>
-    <p>✨ Hoje tem seu próprio studio</p>
+    <p>✨ Tudo começou com um sonho simples… e muita coragem.</p>
+    <p>💅 Começou fazendo um curso e atendendo em casa.</p>
+    <p>🏡 Conquistou clientes com esforço e dedicação.</p>
+    <p>💼 Trabalhou em salão e evoluiu muito.</p>
+    <p>🔥 Nunca desistiu, mesmo nos momentos difíceis.</p>
+    <p>✨ Hoje tem seu próprio studio.</p>
 
   </div>
 
@@ -105,22 +105,25 @@
 
     <div class="prova-card">
       <img src="./img/resultado1.jpg">
-      <p>Resultado</p>
+      <p>Resultado de aluna</p>
     </div>
   </div>
 </section>
 
-<!-- AVALIAÇÃO -->
-<section class="depoimentos">
-  <h2>⭐ Avaliações</h2>
+<!-- AVALIAÇÕES -->
+<section class="avaliacoes">
 
-  <div id="lista-depoimentos" class="dep-container"></div>
+  <h2>⭐ Avaliação das clientes</h2>
+
+  <div id="lista-avaliacoes"></div>
 
   <div class="form-avaliacao">
-    <input id="nome" placeholder="Seu nome">
-    <textarea id="comentario" placeholder="Comentário"></textarea>
 
-    <div id="estrelas" class="estrelas">
+    <input type="text" id="nome" placeholder="Seu nome">
+
+    <textarea id="comentario" placeholder="Seu comentário"></textarea>
+
+    <div class="estrelas" id="estrelas">
       <span onclick="setNota(1)">★</span>
       <span onclick="setNota(2)">★</span>
       <span onclick="setNota(3)">★</span>
@@ -128,8 +131,10 @@
       <span onclick="setNota(5)">★</span>
     </div>
 
-    <button onclick="enviar()">Enviar</button>
+    <button onclick="enviar()">Enviar avaliação</button>
+
   </div>
+
 </section>
 
 <footer>
@@ -138,61 +143,72 @@
 
 <script>
 // CARROSSEL
-document.querySelectorAll(".carousel").forEach(c => {
-  const track = c.querySelector(".track");
-  const slides = c.querySelectorAll(".slide");
-  let i = 0;
+document.querySelectorAll(".carousel").forEach(carousel => {
+  const track = carousel.querySelector(".track");
+  const slides = carousel.querySelectorAll(".slide");
+  const next = carousel.querySelector(".next");
+  const prev = carousel.querySelector(".prev");
 
-  c.querySelector(".next").onclick = () => {
-    i = (i + 1) % slides.length;
-    track.style.transform = `translateX(-${i*100}%)`;
+  let index = 0;
+
+  function update(){
+    track.style.transform = "translateX(-" + index * 100 + "%)";
+  }
+
+  next.onclick = () => {
+    index = (index + 1) % slides.length;
+    update();
   };
 
-  c.querySelector(".prev").onclick = () => {
-    i = (i - 1 + slides.length) % slides.length;
-    track.style.transform = `translateX(-${i*100}%)`;
+  prev.onclick = () => {
+    index = (index - 1 + slides.length) % slides.length;
+    update();
   };
 });
 
-// AVALIAÇÃO
+// AVALIAÇÃO PROFISSIONAL
 let nota = 5;
 
 function setNota(n){
   nota = n;
-  document.querySelectorAll("#estrelas span")
-    .forEach((s,i)=> s.style.color = i<n ? "gold":"#ccc");
+  document.querySelectorAll(".estrelas span").forEach((s,i)=>{
+    s.style.color = i < n ? "gold" : "#ccc";
+  });
 }
 
 function enviar(){
   const nome = document.getElementById("nome").value;
   const comentario = document.getElementById("comentario").value;
 
-  if(!nome || !comentario) return alert("Preencha tudo");
+  if(!nome || !comentario){
+    alert("Preencha tudo!");
+    return;
+  }
 
-  const lista = JSON.parse(localStorage.getItem("avs")) || [];
-  lista.push({nome, comentario, nota});
-  localStorage.setItem("avs", JSON.stringify(lista));
+  const lista = document.getElementById("lista-avaliacoes");
 
-  carregar();
+  const card = document.createElement("div");
+  card.className = "dep-card";
+
+  card.innerHTML = `
+    <p>"${comentario}"</p>
+    <span>— ${nome} ⭐${nota}</span>
+  `;
+
+  lista.appendChild(card);
+
+  localStorage.setItem("avaliacoes", lista.innerHTML);
+
+  document.getElementById("nome").value = "";
+  document.getElementById("comentario").value = "";
 }
 
-function carregar(){
-  const lista = JSON.parse(localStorage.getItem("avs")) || [];
-  const el = document.getElementById("lista-depoimentos");
-  el.innerHTML = "";
-
-  lista.forEach(a=>{
-    el.innerHTML += `
-      <div class="dep-card">
-        <p>"${a.comentario}"</p>
-        <span>${a.nome}</span>
-        <div class="stars">${"★".repeat(a.nota)}</div>
-      </div>`;
-  });
+window.onload = () => {
+  const salvas = localStorage.getItem("avaliacoes");
+  if(salvas){
+    document.getElementById("lista-avaliacoes").innerHTML = salvas;
+  }
 }
-
-carregar();
-setNota(5);
 </script>
 
 </body>
