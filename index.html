@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agendamento | Studio Teste Nails</title>
+  <title>Studio Gabriela</title>
 
   <link rel="stylesheet" href="./css/estilo.css">
 </head>
@@ -16,16 +16,6 @@
     <div class="logo">
       <img src="./img/logo.png">
       <span>Studio Gabriela</span>
-    </div>
-
-    <div class="topo-botoes">
-      <a href="https://instagram.com" target="_blank" class="btn-icone">
-        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png">
-      </a>
-
-      <a href="https://wa.me/5519999999999" target="_blank" class="btn-icone">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
-      </a>
     </div>
 
   </div>
@@ -45,21 +35,9 @@
     <p>Domine <strong>fibra de vidro</strong>, <strong>molde F1</strong>,
     <strong>esmaltação em gel</strong> e <strong>postiça realista</strong>.</p>
 
-    <p>Mesmo começando do zero, você pode <strong>transformar sua renda</strong>
-    e começar a <strong>atender com segurança e qualidade</strong>.</p>
-
-    <a href="./agenda/" class="botao-principal">
+    <a href="#" class="botao-principal">
       QUERO APRENDER AGORA
     </a>
-
-    <h2 style="margin-top:20px; color:#d63384;">A história da Gabriela</h2>
-
-    <p>✨ Tudo começou com um sonho simples… e muita coragem.</p>
-    <p>💅 Começou fazendo um curso e atendendo em casa.</p>
-    <p>🏡 Conquistou clientes com esforço e dedicação.</p>
-    <p>💼 Trabalhou em salão e evoluiu muito.</p>
-    <p>🔥 Nunca desistiu, mesmo nos momentos difíceis.</p>
-    <p>✨ Hoje tem seu próprio studio.</p>
 
   </div>
 
@@ -82,65 +60,20 @@
   </div>
 </section>
 
-<!-- PROVA SOCIAL -->
-<section class="prova-social">
-  <h2>Resultados reais</h2>
-
-  <div class="prova-container">
-    <div class="prova-card">
-      <img src="./img/antes.jpg">
-      <p>Antes</p>
-    </div>
-
-    <div class="prova-card">
-      <img src="./img/depois.jpg">
-      <p>Depois</p>
-    </div>
-
-    <div class="prova-card">
-      <img src="./img/resultado1.jpg">
-      <p>Resultado de aluna</p>
-    </div>
-  </div>
-</section>
-
-<!-- GALERIA -->
-<section class="galeria">
-  <h2 style="text-align:center; margin:30px 0; color:#d63384;">
-    Trabalhos recentes
-  </h2>
-
-  <div class="carousel">
-
-    <button class="nav prev">‹</button>
-
-    <div class="viewport">
-      <div class="track">
-        <div class="slide"><img src="./img/galeria/01.jpg"></div>
-        <div class="slide"><img src="./img/galeria/02.jpg"></div>
-        <div class="slide"><img src="./img/galeria/03.jpg"></div>
-      </div>
-    </div>
-
-    <button class="nav next">›</button>
-
-  </div>
-</section>
-
-<!-- DEPOIMENTOS -->
+<!-- ⭐ AVALIAÇÕES -->
 <section class="depoimentos">
-  <h2>O que minhas clientes dizem</h2>
+
+  <h2>⭐ Avaliação das clientes</h2>
+
+  <div id="media-nota">Média: 5.0 ⭐</div>
 
   <div class="dep-container" id="lista-depoimentos"></div>
 
   <div class="form-avaliacao">
 
-    <h3>Deixe sua avaliação</h3>
-
     <input type="text" id="nome" placeholder="Seu nome">
     <textarea id="comentario" placeholder="Escreva seu comentário"></textarea>
 
-    <!-- ⭐ ESTRELAS CLICÁVEIS -->
     <div class="estrelas" id="estrelas">
       <span onclick="setNota(1)">★</span>
       <span onclick="setNota(2)">★</span>
@@ -152,14 +85,9 @@
     <button onclick="enviarAvaliacao()">Enviar avaliação</button>
 
   </div>
+
 </section>
 
-<!-- RODAPÉ -->
-<footer style="text-align:center; padding:30px;">
-  <p>Studio Teste Nails ©</p>
-</footer>
-
-<!-- JS -->
 <script>
 
 // CARROSSEL
@@ -186,17 +114,58 @@ document.querySelectorAll(".carousel").forEach(carousel => {
   };
 });
 
-// ⭐ AVALIAÇÃO PROFISSIONAL
+// ⭐ SISTEMA PRO
 let nota = 5;
 
 function setNota(n){
   nota = n;
 
   const estrelas = document.querySelectorAll("#estrelas span");
-
   estrelas.forEach((star, i) => {
     star.style.color = i < n ? "gold" : "#ccc";
   });
+}
+
+function salvarAvaliacoes(lista){
+  localStorage.setItem("avaliacoes", JSON.stringify(lista));
+}
+
+function carregarAvaliacoes(){
+  return JSON.parse(localStorage.getItem("avaliacoes")) || [];
+}
+
+function atualizarMedia(lista){
+  if(lista.length === 0){
+    document.getElementById("media-nota").innerText = "Sem avaliações";
+    return;
+  }
+
+  const soma = lista.reduce((acc, item) => acc + item.nota, 0);
+  const media = (soma / lista.length).toFixed(1);
+
+  document.getElementById("media-nota").innerText =
+    `Média: ${media} ⭐ (${lista.length} avaliações)`;
+}
+
+function renderizar(){
+  const lista = carregarAvaliacoes();
+  const container = document.getElementById("lista-depoimentos");
+
+  container.innerHTML = "";
+
+  lista.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "dep-card";
+
+    card.innerHTML = `
+      <p>"${item.comentario}"</p>
+      <span>— ${item.nome} | ${"⭐".repeat(item.nota)}</span>
+    `;
+
+    container.appendChild(card);
+  });
+
+  atualizarMedia(lista);
 }
 
 function enviarAvaliacao(){
@@ -208,17 +177,12 @@ function enviarAvaliacao(){
     return;
   }
 
-  const lista = document.getElementById("lista-depoimentos");
+  const lista = carregarAvaliacoes();
 
-  const card = document.createElement("div");
-  card.className = "dep-card";
+  lista.push({ nome, comentario, nota });
 
-  card.innerHTML = `
-    <p>"${comentario}"</p>
-    <span>— ${nome} | ${"⭐".repeat(nota)}</span>
-  `;
-
-  lista.appendChild(card);
+  salvarAvaliacoes(lista);
+  renderizar();
 
   document.getElementById("nome").value = "";
   document.getElementById("comentario").value = "";
@@ -226,8 +190,8 @@ function enviarAvaliacao(){
   setNota(5);
 }
 
-// inicia com 5 estrelas selecionadas
 setNota(5);
+renderizar();
 
 </script>
 
