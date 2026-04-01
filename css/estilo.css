@@ -127,3 +127,60 @@ body{
     height: 280px;
   }
 }
+/* TOPO FIXO */
+.topo{
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:rgba(255,255,255,0.85);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(0,0,0,0.05);
+}
+
+.topo-container{
+  max-width:1100px;
+  margin:auto;
+  padding:12px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+/* LOGO */
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:900;
+  color:#d63384;
+}
+
+.logo img{
+  width:40px;
+}
+
+/* BOTÕES */
+.topo-botoes{
+  display:flex;
+  gap:10px;
+}
+
+.btn-icone{
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  background:#ffe0ef;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+  transition:.2s;
+}
+
+.btn-icone:hover{
+  transform:scale(1.1);
+}
+
+.btn-icone img{
+  width:22px;
+}
