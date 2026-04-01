@@ -293,11 +293,11 @@ body{
   min-width:100%;
 }
 
-.slide img{
-  width:100%;
-  height:260px;
-  object-fit:cover;
-  border-radius:16px;
+.slide img {
+  width: 100%;
+  height: 600px;
+  object-fit: cover;
+  display: block;
 }
 
 /* RESPONSIVO */
