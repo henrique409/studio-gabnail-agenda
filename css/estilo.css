@@ -485,3 +485,11 @@ body{
 .hero-texto strong {
   font-weight: 600; /* antes pode estar muito pesado */
 }
+.hero-texto h1 {
+  margin-bottom: 10px; /* diminui espaço abaixo do título */
+}
+
+.hero-texto p {
+  margin-top: 6px;   /* menos espaço acima */
+  margin-bottom: 10px; /* menos espaço entre parágrafos */
+}
