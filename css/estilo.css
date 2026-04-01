@@ -80,12 +80,11 @@ body{
 .slide{
   min-width:100%;
 }
-
-.slide img{
-  width:100%;
-  height:350px;
-  object-fit:cover;
-  border-radius:16px;
+.slide img {
+  width: 100%;
+  height: 600px; /* 🔥 aumentei um pouco (antes ~350/400) */
+  object-fit: cover;
+  border-radius: 16px;
 }
 
 /* BOTÕES */
