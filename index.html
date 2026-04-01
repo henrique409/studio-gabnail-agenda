@@ -133,17 +133,20 @@
 
   <div class="dep-container" id="lista-depoimentos"></div>
 
-  <!-- FORM AVALIAÇÃO -->
   <div class="form-avaliacao">
 
     <h3>Deixe sua avaliação</h3>
 
     <input type="text" id="nome" placeholder="Seu nome">
-
     <textarea id="comentario" placeholder="Escreva seu comentário"></textarea>
 
+    <!-- ⭐ ESTRELAS CLICÁVEIS -->
     <div class="estrelas" id="estrelas">
-      ★★★★★
+      <span onclick="setNota(1)">★</span>
+      <span onclick="setNota(2)">★</span>
+      <span onclick="setNota(3)">★</span>
+      <span onclick="setNota(4)">★</span>
+      <span onclick="setNota(5)">★</span>
     </div>
 
     <button onclick="enviarAvaliacao()">Enviar avaliação</button>
@@ -158,6 +161,7 @@
 
 <!-- JS -->
 <script>
+
 // CARROSSEL
 document.querySelectorAll(".carousel").forEach(carousel => {
   const track = carousel.querySelector(".track");
@@ -182,8 +186,18 @@ document.querySelectorAll(".carousel").forEach(carousel => {
   };
 });
 
-// AVALIAÇÃO
+// ⭐ AVALIAÇÃO PROFISSIONAL
 let nota = 5;
+
+function setNota(n){
+  nota = n;
+
+  const estrelas = document.querySelectorAll("#estrelas span");
+
+  estrelas.forEach((star, i) => {
+    star.style.color = i < n ? "gold" : "#ccc";
+  });
+}
 
 function enviarAvaliacao(){
   const nome = document.getElementById("nome").value;
@@ -201,14 +215,20 @@ function enviarAvaliacao(){
 
   card.innerHTML = `
     <p>"${comentario}"</p>
-    <span>— ${nome} ⭐${nota}</span>
+    <span>— ${nome} | ${"⭐".repeat(nota)}</span>
   `;
 
   lista.appendChild(card);
 
   document.getElementById("nome").value = "";
   document.getElementById("comentario").value = "";
+
+  setNota(5);
 }
+
+// inicia com 5 estrelas selecionadas
+setNota(5);
+
 </script>
 
 </body>
