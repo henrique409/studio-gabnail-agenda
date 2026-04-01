@@ -383,3 +383,39 @@ body{
   transform:translateX(-50%);
   width:80%;
 }
+/* ===== MELHORIA BIOGRAFIA HERO ===== */
+
+.hero-texto h1{
+  line-height:1.2;
+}
+
+.hero-texto p{
+  font-size:15.5px;
+  line-height:1.7;
+  color:#444;
+  margin-bottom:14px;
+}
+
+.hero-texto p:last-of-type{
+  margin-bottom:22px;
+}
+
+/* efeito mais elegante no bloco */
+.hero{
+  transition: all .3s ease;
+}
+
+.hero:hover{
+  transform: translateY(-3px);
+  box-shadow:0 20px 45px rgba(0,0,0,0.10);
+}
+
+/* botão com mais destaque */
+.botao-comprar{
+  transition: all .25s ease;
+}
+
+.botao-comprar:hover{
+  transform: scale(1.05);
+  box-shadow:0 18px 40px rgba(255,79,163,.45);
+}
