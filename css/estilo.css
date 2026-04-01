@@ -183,20 +183,32 @@ body{
 
 .btn-icone img{
   width:22px;
-}
 .botao-principal{
   display:inline-block;
-  margin-top:18px;
+  margin-top:20px;
   background:linear-gradient(45deg,#ff2e93,#ff6bb5);
   color:#fff;
-  padding:16px 26px;
-  border-radius:14px;
+  padding:16px 28px;
+  border-radius:12px;
   font-weight:900;
   text-decoration:none;
-  box-shadow:0 10px 30px rgba(255,46,147,.3);
+  font-size:15px;
+  box-shadow:0 8px 25px rgba(255,46,147,.3);
   transition:.25s;
 }
 
 .botao-principal:hover{
   transform:scale(1.05);
+}
+.hero-texto p{
+  margin-bottom:16px;
+}
+
+.hero-texto h2{
+  margin-top:25px;
+  margin-bottom:10px;
+}
+
+.hero-texto{
+  gap:6px;
 }
